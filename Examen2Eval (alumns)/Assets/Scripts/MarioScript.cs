@@ -112,13 +112,25 @@ public class MarioScript : MonoBehaviour
         Gizmos.DrawRay(transform.position, Vector2.down * rayDistance);
     }
 
-    //public void StartInvulnerable()
-    //{
-    //    StartCoroutine(Invulnerable());
-    //}
+    private void OnTriggerEnter2D(Collider2D collision)     // Cuando mario toca la estrella
+    {
+        if (GetComponent<Star>())           // Asumiendo que mario pudiera detectar la estrella
+        {
+            StartCoroutine(Invulnerable());     // Empezaria la corrutina
+        }
+    }
 
-    //IEnumerator Invulnerable()
-    //{
-        
-    //}
+    IEnumerator Invulnerable()
+    {
+        float duration = 5;             // Que durante 5s
+        float interval = 0.03f;         // Cada intervalo de 0.03s
+        float currTime = 0f;            
+
+        while (currTime < duration)
+        {
+            _rend.material.color = new Color(Random.value, Random.value, Random.value);     // Cambiaria de color cada intervalo
+            currTime += Time.deltaTime;                                                     // Hasta que pasen los 5s y currTime sea mayor que duration
+            yield return new WaitForSeconds(interval);                                      // Repetiria cada intervalo
+        }
+    }
 }
