@@ -11,6 +11,7 @@ public class MarioScript : MonoBehaviour
     public LayerMask groundMask;
     public AudioClip jumpClip, starClip;
     public int maxJumps = 2;
+    private int currJumps;
 
     private Rigidbody2D rb;
     private SpriteRenderer _rend;
@@ -76,7 +77,7 @@ public class MarioScript : MonoBehaviour
         rb.velocity = nVel;
 
 
-        if (_intentionToJump && (grnd))
+        if (_intentionToJump && (grnd) || _intentionToJump && currJumps > 0)
         {
             _animator.Play("jumpAnimation");
             AddJumpForce();
@@ -91,6 +92,7 @@ public class MarioScript : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, 0);
         rb.AddForce(Vector2.up * jumpForce * rb.gravityScale, ForceMode2D.Impulse);
         AudioManager.instance.PlayAudio(jumpClip, "jumpSound");
+        currJumps -= 1;
     }
 
     private bool IsGrounded()
@@ -98,6 +100,7 @@ public class MarioScript : MonoBehaviour
         RaycastHit2D collision = Physics2D.Raycast(transform.position, Vector2.down, rayDistance, groundMask);
         if (collision)
         {
+            currJumps = maxJumps;
             return true;
         }
         return false;
