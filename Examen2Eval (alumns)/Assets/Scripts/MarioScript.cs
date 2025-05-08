@@ -16,6 +16,7 @@ public class MarioScript : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer _rend;
     private Animator _animator;
+    private MarioScript _mario;
     private Vector2 dir;
     private bool _intentionToJump;
 
@@ -25,6 +26,7 @@ public class MarioScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         _rend = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
+        _mario = GetComponent<MarioScript>();
     }
 
     // Update is called once per frame
@@ -50,19 +52,25 @@ public class MarioScript : MonoBehaviour
             _intentionToJump = true;
         }
 
-       
-
         #region ANIMACIONES
         // ANIMACIONES (PROXIMA DIA ORGANIZARLO EN OTRO SCRIPT)
-        if (dir != Vector2.zero)
+        if (dir != Vector2.zero && IsGrounded())
         {
             // estamos andando
             _animator.SetBool("isWalking", true);
+            _animator.SetBool("isIdling", false);
+        }
+        else if (!IsGrounded())
+        {
+            _animator.SetBool("isJumping", true);
+            _animator.SetBool("isIdling", false);
         }
         else
         {
             // estamos parados
+            _animator.SetBool("isIdling", true);
             _animator.SetBool("isWalking", false);
+            _animator.SetBool("isJumping", false);
         }
         #endregion
     }
